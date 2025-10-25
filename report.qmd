@@ -8,17 +8,35 @@ format: typst
 ## **Part 0: libraries**
 
 ```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(stringr)
+energy_price = read_csv("data/av-energy-price-2021-2023.csv")
+total_use_2021 = read_csv("data/total-use-2021.csv")
 
 ```
 
 ## **Part 1:** **Defining Research Question**
 
-Chosen Question:
+Chosen Question: Do states with higher renewable usage have lower average electricity prices in 2021? 
 
 ## **Part 2: Data Preparation and Cleaning**
 
 ```{r}
+#First step is making the energy_price into a workable dataset instead of whatever it originally is. (A hot mess)
+energy_price = energy_price[-1,]
+energy_price
 
+new_energy_price = energy_price|>
+    separate(col = colnames(energy_price),
+    into = c("State", "2021_Average_Price", "2022_Average_Price", "2023_Average_Price"),
+    sep = ",") |> 
+    mutate(`2021_Average_Price` = str_remove_all(`2021_Average_Price`, "[^0-9.]"))|>
+    mutate(`2022_Average_Price` = str_remove_all(`2022_Average_Price`, "[^0-9.]"))|>
+    mutate(`2023_Average_Price` = str_remove_all(`2023_Average_Price`, "[^0-9.{1}]"))
+new_energy_price
 ```
 
 ## **Part 3: Joining / Pivoting Datasets for Analysis**
