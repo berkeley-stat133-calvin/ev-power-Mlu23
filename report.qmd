@@ -37,11 +37,34 @@ new_energy_price = energy_price|>
     mutate(`2022_Average_Price` = str_remove_all(`2022_Average_Price`, "[^0-9.]"))|>
     mutate(`2023_Average_Price` = str_remove_all(`2023_Average_Price`, "[^0-9.{1}]"))
 new_energy_price
+
+#Going to need some data set with the proportion of energy coming from renewable energy use from the total_use_2021 dataset
+ 
+#Bro why are there 53 columns. 
+#DC, LA shouldn't be in there those are cities
+
+total_use_2021
+total_use_2021_states = total_use_2021[, c(-9, -20)]
+
+total_use_pivot = pivot_longer(total_use_2021_states, cols = c(2:51), names_to = "State", values_to = "Usage")
+total_use_pivot
+final_pivot = pivot_wider(total_use_pivot, names_from = Energy_Source, values_from = Usage)
+proportions_data = final_pivot|>
+    group_by(State)|>
+    mutate(proportion = total_renewable_energy/(Coal + `Natural Gas†` + `Petroleum (BTU)`))|>
+    select(State, proportion)
+
 ```
 
 ## **Part 3: Joining / Pivoting Datasets for Analysis**
 
 ```{r}
+new_energy_price
+proportions_data
+
+joined_dataset = left_join(x = new_energy_price, y = proportions_data)
+joined_dataset
+
 
 ```
 
