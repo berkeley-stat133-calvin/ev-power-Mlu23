@@ -8,6 +8,7 @@ format: typst
 ## **Part 0: libraries**
 
 ```{r}
+#|eval = FALSE
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
@@ -25,6 +26,7 @@ Chosen Question: Do states with higher renewable usage have lower average electr
 ## **Part 2: Data Preparation and Cleaning**
 
 ```{r}
+#|eval = FALSE
 #First step is making the energy_price into a workable dataset instead of whatever it originally is. (A hot mess)
 energy_price = energy_price[-1,]
 energy_price
@@ -63,13 +65,12 @@ new_energy_price
 proportions_data
 
 joined_dataset = left_join(x = new_energy_price, y = proportions_data)
-joined_dataset
-
-
+necessary_columns = joined_dataset|>
+    select(c(1, 2, 5))
 ```
 
 ## **Part 4: Mapping Visualization**
 
 ```{r}
-
+ggplot(necessary_columns, aes(x = proportion, y = as.numeric(`2021_Average_Price`))) + geom_point() + geom_smooth(method = lm) + labs(title = "", x = "Proportion that is renewable energy", y = "Average Price of energy") 
 ```
